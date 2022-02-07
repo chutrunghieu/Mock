@@ -1,0 +1,20 @@
+POST http://localhost:3000/system/login 
+
+Content-Type: :application/json
+
+{
+    "email": "bcdef@gmail.com",
+    "password": "acevip123"
+}
+
+###
+POST http://localhost:3000/system/signup 
+Content-Type: :application/json
+
+{
+        "email" : "cdef@gmail.com",
+         "pwd" : "abc123",
+         "pwd2" : "abc123",
+         "name": "hieu",
+         "phone" : 12345567
+     }
