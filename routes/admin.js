@@ -6,6 +6,10 @@ var admin = require('../controllers/adminC');
 router.post('/createQuestion', admin.createQuestion);
 router.post('/createCorrectAnswer', admin.createCorrectAnswer);
 router.post('/createWrongAnswer', admin.createWrongAnswer);
+
+router.get('/getAllQuestion', admin.getQuestions);
 router.get('/getDetailQuestion/:id', admin.getDetailQuestion);
+
+
 
 module.exports = router;

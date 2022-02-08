@@ -20,7 +20,8 @@ const token = db.define('token',{
         type:DataTypes.INTEGER,
         allowNull: false,
     },
-});  
+}); 
+ 
 user.hasMany(token, {
     targetKey: 'user_id',
     foreignKey: 'user_id',

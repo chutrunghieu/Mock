@@ -1,6 +1,7 @@
 const correctAnswers = require("../models/correctAnswerModel");
 const question = require("../models/questionModel");
 const wrongAnswers = require("../models/wrongAnswerModel");
+const questionService = require("../services/question.service");
 
 exports.createQuestion = async (res, req) => {
   data = {
@@ -17,15 +18,28 @@ exports.createQuestion = async (res, req) => {
   }
 };
 
-exports.getDetailQuestion = async (res, req) => {
-  const { id } = req.params.id;
+exports.getQuestions = async (req, res) =>{
   try {
-    const getDetailQuestion = await question.findOne({ question_id: id });
-    res.json(getDetailQuestion);
+    const getQuestions = await question.findAll();
+    return res.json({getQuestions});
   } catch (error) {
     console.log(error);
   }
 };
+
+exports.getDetailQuestion = async (res, req) => {
+  const { id } = req.params.id;
+  try {
+    const getDetailQuestion = await questionService.findQuestionById(id);
+    const getCorrectAnswers = await questionService.getCorrectAnswer(id);
+    const getWrongAnswers = await questionService.getWrongAnswer(id);
+    return res.json({getDetailQuestion},{getCorrectAnswers},{getWrongAnswers});
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+
 exports.createCorrectAnswer = async (res, req) => {
   data = {
     content: "hinh cau",
@@ -33,7 +47,7 @@ exports.createCorrectAnswer = async (res, req) => {
   };
   const { content, question_id } = data || req.body;
   try {
-    const findQuestion = await question.findOne({ where: { question_id: question_id }});
+    const findQuestion = await questionService.findQuestionById(question_id);
     const newCA = await correctAnswers.create({
       content: content,
       question_id: findQuestion.question_id,
@@ -51,7 +65,7 @@ exports.createWrongAnswer = async (res, req) => {
   };
   const { content, question_id } = data || req.body;
   try {
-    const findQuestion = await question.findOne({ where: { question_id: question_id } });
+    const findQuestion = await questionService.findQuestionById(question_id);
     const newWA = await wrongAnswers.create({
       content: content,
       question_id: findQuestion.question_id,

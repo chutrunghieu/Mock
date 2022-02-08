@@ -72,7 +72,12 @@ exports.login = async (res, req, next) => {
           console.log(newToken);
         }
         console.log(accessToken);
-        console.log("Login successfully");
+        if (checkUser.role = "user"){
+          console.log("user home");
+        }
+        if (checkUser.role = "admin"){
+          console.log("admin home");
+        }
       } else {
         const msg = "Username or Password is incorrect !";
         return console.log(msg);
