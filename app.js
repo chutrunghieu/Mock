@@ -30,7 +30,8 @@ app.use(
   })
 );
 app.use(express.json());
-app.use(bodyParser());
+app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({ extended: true }))
 app.use('/', usersRouter);
 app.use('/system', systemRouter);
 app.use('/admin',adminRouter);

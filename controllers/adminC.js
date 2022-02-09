@@ -1,17 +1,14 @@
-const correctAnswers = require("../models/correctAnswerModel");
+// const correctAnswers = require("../models/correctAnswerModel");
 const question = require("../models/questionModel");
-const wrongAnswers = require("../models/wrongAnswerModel");
-const questionService = require("../services/question.service");
+// const wrongAnswers = require("../models/wrongAnswerModel");
+const {questionService, answerService} = require("../services/index");
 
-exports.createQuestion = async (res, req) => {
-  data = {
-    content: "trai dat hinh gi?",
-  };
-  const { content } = data || req.body;
+
+//Handle Question
+exports.createQuestion = async (req, res) => {
+  const {content} = req.body;
   try {
-    const newQuestion = await question.create({
-      content: content,
-    });
+    const newQuestion = await questionService.createQuestion(content);
     console.log(newQuestion);
   } catch (error) {
     console.log(error);
@@ -27,51 +24,71 @@ exports.getQuestions = async (req, res) =>{
   }
 };
 
-exports.getDetailQuestion = async (res, req) => {
+exports.getDetailQuestion = async (req, res) => {
   const { id } = req.params.id;
   try {
     const getDetailQuestion = await questionService.findQuestionById(id);
-    const getCorrectAnswers = await questionService.getCorrectAnswer(id);
-    const getWrongAnswers = await questionService.getWrongAnswer(id);
+    const getCorrectAnswers = await answerService.getCorrectAnswer(id);
+    const getWrongAnswers = await answerService.getWrongAnswer(id);
     return res.json({getDetailQuestion},{getCorrectAnswers},{getWrongAnswers});
   } catch (error) {
     console.log(error);
   }
 };
+exports.deleteQuestion = async (req, res) =>{
+  const {id} = req.body;
+  try {
+    const findOneQuestion = await questionService.findQuestionById(id);
+    const deleteQuestion = await questionService.deleteQuestion(findOneQuestion.question_id);
+    const deleteCorrectAnswer = await answerService.deleteCorrectAnswer(findOneQuestion.question_id);
+    const deleteWrongAnswer = await answerService.deleteWrongAnswer(findOneQuestion.question_id);
 
+    console.log(deleteQuestion);
+  } catch (error) {
+    console.log(error);
+  }
+}
 
-exports.createCorrectAnswer = async (res, req) => {
-  data = {
-    content: "hinh cau",
-    question_id: 1,
-  };
-  const { content, question_id } = data || req.body;
+//Handle Answer
+exports.createCorrectAnswer = async (req, res) => {
+
+  const { content, question_id } = req.body;
   try {
     const findQuestion = await questionService.findQuestionById(question_id);
-    const newCA = await correctAnswers.create({
-      content: content,
-      question_id: findQuestion.question_id,
-    });
+    const newCA = await answerService.createCorrectAnswer(content, findQuestion.question_id);
     console.log(newCA);
   } catch (error) {
     console.log(error);
   }
 };
+exports.deleteCorrectAnswer = async (req, res) =>{
+  const {id} = req.body;
+  try {
+    const findCorrectAnswer = await answerService.getCorrectAnswerId(id);
+    const deleteCorrectAnswer = await answerService.deleteCorrectAnswer(findCorrectAnswer.correct_answers_id);
+    console.log(deleteCorrectAnswer);
+  } catch (error) {
+    console.log(error);
+  }
+}
 
-exports.createWrongAnswer = async (res, req) => {
-  data = {
-    content: "hinh tam giac",
-    question_id: 1,
-  };
-  const { content, question_id } = data || req.body;
+exports.createWrongAnswer = async (req, res) => {
+  const { content, question_id } =  req.body;
   try {
     const findQuestion = await questionService.findQuestionById(question_id);
-    const newWA = await wrongAnswers.create({
-      content: content,
-      question_id: findQuestion.question_id,
-    });
+    const newWA = await answerService.createWrongAnswer(content, findQuestion.question_id);
     console.log(newWA);
   } catch (error) {
     console.log(error);
   }
 };
+exports.deleteWrongAnswer = async (req, res) =>{
+  const {id} = req.body;
+  try {
+    const findWrongAnswer = await answerService.getWrongAnswerId(id);
+    const deleteWrongAnswer = await answerService.deleteWrongAnswer(findWrongAnswer.wrong_answers_id);
+    console.log(deleteWrongAnswer);
+  } catch (error) {
+    console.log(error);
+  }
+}

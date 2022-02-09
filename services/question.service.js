@@ -1,22 +1,4 @@
-const correctAnswers = require("../models/correctAnswerModel");
 const question = require("../models/questionModel");
-const wrongAnswers = require("../models/wrongAnswerModel");
-
-exports.getCorrectAnswer = async (id) =>{
-    try {
-      return getCorrectAnswers = await correctAnswers.findAll({where: {question_id: id}});
-    } catch (error) {
-      console.log(error )
-    }
-  };
-  
-  exports.getWrongAnswer = async (id) =>{
-    try {
-      return getWrongAnswers = await wrongAnswers.findAll({where: {question_id: id}});
-    } catch (error) {
-      console.log(error )
-    }
-  };
 
 exports.findQuestionById = async (id) =>{
     try {
@@ -26,3 +8,28 @@ exports.findQuestionById = async (id) =>{
     }
 }
 
+exports.createQuestion = async (content) => {
+  try {
+    const newQuestion = await question.create({
+      content: content,
+    });
+    return newQuestion;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+exports.deleteQuestion = async (id) =>{
+  try {
+      const deleteQuestion = await question.destroy({where: {question_id: id}});
+      return deleteQuestion;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+// module.exports = {
+//   findQuestionById,
+//   createQuestion,
+//   deleteQuestion,
+// }

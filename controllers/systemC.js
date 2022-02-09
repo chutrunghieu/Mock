@@ -39,7 +39,7 @@ exports.signUp = async (req, res, next) => {
   }
 };
 
-exports.login = async (res, req, next) => {
+exports.login = async (req, res, next) => {
   data = {
     email: "abc@gmal.com",
     pwd: "abc123",
@@ -88,10 +88,10 @@ exports.login = async (res, req, next) => {
   }
 };
 
-exports.logout = async (res, req) =>{
+exports.logout = async (req, res) =>{
   const refreshToken = req.body.token;
   try {
-    const checkToken = await token.findOne({ data_token: refreshToken });
+    const checkToken = await token.findOne({where: { data_token: refreshToken }});
     if(checkToken){
       await token.destroy({where: {data_token: refreshToken}});
       console.log('Logout successfully!');

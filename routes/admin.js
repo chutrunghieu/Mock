@@ -10,6 +10,11 @@ router.post('/createWrongAnswer', admin.createWrongAnswer);
 router.get('/getAllQuestion', admin.getQuestions);
 router.get('/getDetailQuestion/:id', admin.getDetailQuestion);
 
+router.delete('/deleteQuestion', admin.deleteQuestion);
+router.delete('/deleteCorrectAnswer',admin.deleteCorrectAnswer);
+router.delete('/deleteWrongAnswer',admin.deleteWrongAnswer);
+
+
 
 
 module.exports = router;
