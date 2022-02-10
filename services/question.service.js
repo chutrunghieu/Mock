@@ -28,6 +28,14 @@ exports.deleteQuestion = async (id) =>{
   }
 }
 
+exports.updateQuestion = async (id , content) =>{
+  try {
+    const updateQuestion = await question.update({content: content}, {where:{question_id:id}});
+    return updateQuestion;
+  } catch (error) {
+    console.log(error);
+  }
+}
 // module.exports = {
 //   findQuestionById,
 //   createQuestion,

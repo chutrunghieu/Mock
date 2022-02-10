@@ -30,7 +30,7 @@ exports.getDetailQuestion = async (req, res) => {
     const getDetailQuestion = await questionService.findQuestionById(id);
     const getCorrectAnswers = await answerService.getCorrectAnswer(id);
     const getWrongAnswers = await answerService.getWrongAnswer(id);
-    return res.json({getDetailQuestion},{getCorrectAnswers},{getWrongAnswers});
+    return res.json({getDetailQuestion,getCorrectAnswers,getWrongAnswers});
   } catch (error) {
     console.log(error);
   }
@@ -48,7 +48,17 @@ exports.deleteQuestion = async (req, res) =>{
     console.log(error);
   }
 }
-
+exports.updateQuestion = async(req, res) =>{
+  const {id} = req.params.id;
+  const {content} = req.body;
+  try {
+    // const findOneQuestion = await questionService.findQuestionById(id);
+    const updateQuestion = await questionService.updateQuestion(id, content);
+    return res.json({updateQuestion});
+  } catch (error) {
+    console.log(error);
+  }
+}
 //Handle Answer
 exports.createCorrectAnswer = async (req, res) => {
 
@@ -71,7 +81,16 @@ exports.deleteCorrectAnswer = async (req, res) =>{
     console.log(error);
   }
 }
-
+// exports.updateCorrectQuestion = async(req, res) =>{
+//   const {content,id} = req.body;
+//   try {
+//     const findCorrectAnswer = await answerService.getCorrectAnswerId(id);
+//     const updateCorrectQuestion = await answerService.updateCorrectQuestion(findCorrectAnswer.correct_answers_id, content);
+//     return res.json({updateCorrectQuestion});
+//   } catch (error) {
+//     console.log(error);
+//   }
+// }
 exports.createWrongAnswer = async (req, res) => {
   const { content, question_id } =  req.body;
   try {
@@ -92,3 +111,14 @@ exports.deleteWrongAnswer = async (req, res) =>{
     console.log(error);
   }
 }
+
+// exports.updateWrongQuestion = async(req, res) =>{
+//   const {content, id} = req.body;
+//   try {
+//     const findWrongAnswer = await answerService.getWrongAnswerId(id);
+//     const updateWrongQuestion = await answerService.updateWrongQuestion(findWrongAnswer.wrong_answers_id, content);
+//     return res.json({updateWrongQuestion});
+//   } catch (error) {
+//     console.log(error);
+//   }
+// }

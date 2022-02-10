@@ -51,6 +51,15 @@ exports.deleteCorrectAnswer = async (id) => {
     console.log(error);
   }
 };
+
+// exports.updateCorrectQuestion = async (id , content) =>{
+//   try {
+//     const updateCorrectQuestion = await correctAnswers.update({content: content}, {where:{correct_answers_id:id}});
+//     return updateCorrectQuestion;
+//   } catch (error) {
+//     console.log(error);
+//   }
+// }
 //Wrong Answer
 exports.getWrongAnswer = async (id) => {
   try {
@@ -77,20 +86,20 @@ exports.createWrongAnswer = async (content, question_id) => {
 
 exports.getWrongAnswerId = async (id) => {
   try {
-    const getCorrectAnswerId = await correctAnswers.findOne({
-      where: { correct_answers_id: id },
+    const getWrongAnswerId = await wrongAnswers.findOne({
+      where: { wrong_answers_id: id },
     });
-    return getCorrectAnswerId;
+    return getWrongAnswerId;
   } catch (error) {
     console.log(error);
   }
 };
 exports.deleteWrongAnswer = async (id) => {
   try {
-      const deleteWrongAnswer = await correctAnswers.destroy({
+      const deleteWrongAnswer = await wrongAnswers.destroy({
         where: {
           [Op.or]: [
-            { correct_answers_id: id},
+            { wrong_answers_id: id},
             { question_id: id },
           ],
         },
@@ -101,6 +110,14 @@ exports.deleteWrongAnswer = async (id) => {
     console.log(error);
   }
 };
+// exports.updateWrongQuestion = async (id , content) =>{
+//   try {
+//     const updateWrongQuestion = await wrongAnswers.update({content: content}, {where:{wrong_answers_id:id}});
+//     return updateWrongQuestion;
+//   } catch (error) {
+//     console.log(error);
+//   }
+// }
 
 // module.exports = {
 //   deleteWrongAnswer,

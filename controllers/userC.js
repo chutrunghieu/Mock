@@ -1,35 +1,29 @@
 const question = require('../models/questionModel');
+const correctAnswers = require('../models/correctAnswerModel');
+const wrongAnswers = require('../models/wrongAnswerModel');
 
 exports.submit = (req, res) =>{
     
 };
 
-exports.getQuestion = (req, res) =>{
+exports.getQuestion = async (req, res) =>{
     try {
-        // const questions = question.findAll({
-        //     order: 'random()',
-        //     limit: 10,
-        //     include: [
-        //         {    
-        //             model: correctAnswers,
-        //             where:{
-        //                 question_id = Sequelize.col('question.question_id')
-        //             },
-        //             association: "correctAnswers",
-        //             attributes: ["content"]
-        //         },
-        //         {
-        //             association: "correctAnswers",
-        //             where:{
-        //                 question_id = Sequelize.col('question.question_id')
-        //             },
-        //             association: "correctAnswers",
-        //             attributes: ["content"]
-        //         }
-        //     ],
-        // })
-        // console.log(questions.correctAnswers.content);
+        const questions = await question.findAll({
+            order: [question.sequelize.random()],
+            limit: 10,
+            include: [
+                {    
+                    model: correctAnswers,
+                    association: "correctAnswers",
+                },
+                {
+                    model: wrongAnswers,
+                    association: "wrongAnswers",
+                }
+            ],
+        })
+        return res.json({questions});
     } catch (error) {
             console.log(error);
-    }
+    } 
 };

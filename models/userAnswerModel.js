@@ -18,6 +18,9 @@ const userAnswer = db.define("userAnswer", {
     type: DataTypes.INTEGER,
     allowNull: false,
   },
+  answerOfUser:{
+    type: DataTypes.STRING,
+  }
 });
 
 
