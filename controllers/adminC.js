@@ -1,6 +1,4 @@
-// const correctAnswers = require("../models/correctAnswerModel");
 const question = require("../models/questionModel");
-// const wrongAnswers = require("../models/wrongAnswerModel");
 const {questionService, answerService} = require("../services/index");
 
 

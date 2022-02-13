@@ -2,7 +2,6 @@ const { Sequelize, DataTypes } = require("sequelize");
 const db = require("../config/database");
 const wrongAnswers = require('../models/wrongAnswerModel');
 const correctAnswers = require('../models/correctAnswerModel');
-const userAnswer = require("./userAnswerModel");
 const question = db.define("question", {
     question_id: {
         type:DataTypes.INTEGER,
@@ -23,10 +22,10 @@ const question = db.define("question", {
   // }
 });
 
-question.hasMany(userAnswer, {
-  targetKey: 'question_id',
-  foreignKey: "question_id",
-});
+// question.hasMany(userAnswer, {
+//   targetKey: 'question_id',
+//   foreignKey: "question_id",
+// });
 question.hasMany(correctAnswers, {
   targetKey: 'question_id',
   foreignKey: "question_id",

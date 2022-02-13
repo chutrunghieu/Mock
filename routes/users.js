@@ -10,5 +10,6 @@ router.get('/', (req, res) => {
 router.post('/submit', user.submit);
 
 router.get('/getQuestion', user.getQuestion);
+router.get('/getScore', user.getScore);
   
 module.exports = router;
