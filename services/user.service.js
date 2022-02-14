@@ -19,3 +19,17 @@ exports.addScore = async (user_id,score) =>{
         console.log(error);
     }
 }
+
+exports.createUser = async(email, password, name, phone)=>{
+    try {
+        const newUser = await user.create({
+            email: email,
+            password: bcrypt.hashSync(password, bcrypt.genSaltSync(8), null),
+            name: name,
+            phone: phone,
+          });
+        return newUser;
+    } catch (error) {
+        console.log(error);
+    }
+}

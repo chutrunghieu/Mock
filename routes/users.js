@@ -7,9 +7,9 @@ router.get('/', (req, res) => {
   res.send('ok')
 });
 
-router.post('/submit', user.submit);
+router.post('/submit',verify.authorization, user.submit);
 
-router.get('/getQuestion', user.getQuestion);
-router.get('/getScore', user.getScore);
+router.get('/getQuestion',verify.authorization, user.getQuestion);
+router.get('/getScore',verify.authorization, user.getScore);
   
 module.exports = router;

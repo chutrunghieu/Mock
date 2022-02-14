@@ -1,37 +1,21 @@
-var user = require("../models/userModel");
-var token = require("../models/tokenModel");
 var bcrypt = require("bcrypt");
-var jwt = require("jsonwebtoken");
 var dotenv = require("dotenv");
+var jwt = require("jsonwebtoken");
+
 dotenv.config();
+const {userService, tokenService} = require('../services/index');
 
 exports.signUp = async (req, res, next) => {
-  data = {
-    email: "abc@gmal.com",
-    pwd: "abc123",
-    pwd2: "abc123",
-    name: "hieu",
-    phone: 12345567,
-  };
-  const { email, pwd, pwd2, name, phone } = data || req.body;
+  const { email, password, pwd2, name, phone } = req.body;
   try {
-    const checkUser = await user.findOne({
-      where: {
-        email: email,
-      },
-    });
+    const checkUser = await userService.findUser(email);
     if (checkUser) {
       return console.log("email is exist!");
     }
-    if (pwd != pwd2) {
+    if (password != pwd2) {
       return console.log("Confirm password is wrong!");
     } else {
-      const newUser = await user.create({
-        email: email,
-        password: bcrypt.hashSync(pwd, bcrypt.genSaltSync(8), null),
-        name: name,
-        phone: phone,
-      });
+      const newUser = await userService.createUser(email, password,name, phone);
       return console.log(newUser);
     }
   } catch (error) {
@@ -40,42 +24,27 @@ exports.signUp = async (req, res, next) => {
 };
 
 exports.login = async (req, res, next) => {
-  data = {
-    email: "abc@gmal.com",
-    pwd: "abc123",
-  };
-  const { email, pwd } = data || req.body;
+  const { email, pwd } = req.body;
   try {
-    const checkUser = await user.findOne({
-      where: {
-        email: email,
-      },
-    });
+    const checkUser = await userService.findUser(email);
     if (!checkUser) {
       return console.log("User is not found!");
     } else {
       const same = bcrypt.compare(checkUser.password, pwd);
       if (same) {
-        const accessToken = jwt.sign(
-          { email: email, role: checkUser.role },
-          process.env.ACCESS_TOKEN_SECRET,
-          { expiresIn: "60s" }
-        );
-        const refreshToken = jwt.sign(
-          { email: email, role: checkUser.role },
-          process.env.REFRESH_TOKEN_SECRET,
-          { expiresIn: "86400s" }
-        );
-        const checkToken = await token.findOne({ data_token: refreshToken });
+        const accessToken = await tokenService.signAccessToken(email,checkUser.role);
+        const refreshToken = await tokenService.signRefreshToken(email,checkUser.role);
+
+        const checkToken = await tokenService.findToken(refreshToken);
         if (!checkToken) {
-          const newToken = await token.create({ data_token: refreshToken, user_id: checkUser.user_id});
+          const newToken = await tokenService.createToken(refreshToken, checkUser.user_id);
           console.log(newToken);
         }
         console.log(accessToken);
-        if (checkUser.role = "user"){
+        if (checkUser.role === "user"){
           console.log("user home");
         }
-        if (checkUser.role = "admin"){
+        if (checkUser.role === "admin"){
           console.log("admin home");
         }
       } else {
@@ -91,12 +60,27 @@ exports.login = async (req, res, next) => {
 exports.logout = async (req, res) =>{
   const refreshToken = req.body.token;
   try {
-    const checkToken = await token.findOne({where: { data_token: refreshToken }});
+    const checkToken = await tokenService.findToken(refreshToken);
     if(checkToken){
-      await token.destroy({where: {data_token: refreshToken}});
+      await tokenService.destroyToken(refreshToken);
       console.log('Logout successfully!');
     }
   } catch (error) {
     console.log(error)
   }
 }
+exports.refreshToken = async (req, res) => {
+  const {refreshToken} = req.body;
+  try {
+    const check = await tokenService.findToken(refreshToken);
+    if (check) {
+      const data = tokenService.verifyToken(refreshToken);
+      if (data) {
+        const accessToken = await tokenService.signAccessToken(data.email,data.role);
+        console.log(accessToken);
+      }
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
