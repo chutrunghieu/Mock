@@ -19,11 +19,11 @@ const passport = require("passport");
 const verifyCallback =
   (req, resolve, reject, requiredRights) => async (err, user, info) => {
     if (err || info || !user) {
-      return reject("Please authenticate");
+      return reject("Not authenticate");
     }
     req.user = user;
     if (!requiredRights || requiredRights !== user.role.toLowerCase()) {
-      return reject("Forbidden");
+      return reject("You do not have access");
     } else {
       resolve();
     }
