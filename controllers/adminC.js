@@ -7,7 +7,7 @@ exports.createQuestion = async (req, res) => {
   const {content} = req.body;
   try {
     const newQuestion = await questionService.createQuestion(content);
-    console.log(newQuestion);
+    return res.status(200).json({msg:"Success",newQuestion});
   } catch (error) {
     console.log(error);
   }
@@ -16,7 +16,7 @@ exports.createQuestion = async (req, res) => {
 exports.getQuestions = async (req, res) =>{
   try {
     const getQuestions = await question.findAll();
-    return res.json({getQuestions});
+    return res.status(200).json({msg:"Success",getQuestions});
   } catch (error) {
     console.log(error);
   }
@@ -28,7 +28,7 @@ exports.getDetailQuestion = async (req, res) => {
     const getDetailQuestion = await questionService.findQuestionById(id);
     const getCorrectAnswers = await answerService.getCorrectAnswer(id);
     const getWrongAnswers = await answerService.getWrongAnswer(id);
-    return res.json({getDetailQuestion,getCorrectAnswers,getWrongAnswers});
+    return res.status(200).json({msg:"Success",getDetailQuestion,getCorrectAnswers,getWrongAnswers});
   } catch (error) {
     console.log(error);
   }
@@ -41,7 +41,7 @@ exports.deleteQuestion = async (req, res) =>{
     const deleteCorrectAnswer = await answerService.deleteCorrectAnswer(findOneQuestion.question_id);
     const deleteWrongAnswer = await answerService.deleteWrongAnswer(findOneQuestion.question_id);
 
-    console.log(deleteQuestion);
+    return res.status(200).json({msg:"Success",deleteQuestion,deleteCorrectAnswer,deleteWrongAnswer});
   } catch (error) {
     console.log(error);
   }
@@ -52,7 +52,7 @@ exports.updateQuestion = async(req, res) =>{
   try {
     // const findOneQuestion = await questionService.findQuestionById(id);
     const updateQuestion = await questionService.updateQuestion(id, content);
-    return res.json({updateQuestion});
+    return res.status(200).json({msg:"Success",updateQuestion});
   } catch (error) {
     console.log(error);
   }
@@ -64,7 +64,7 @@ exports.createCorrectAnswer = async (req, res) => {
   try {
     const findQuestion = await questionService.findQuestionById(question_id);
     const newCA = await answerService.createCorrectAnswer(content, findQuestion.question_id);
-    console.log(newCA);
+    return res.status(200).json({msg:"Success",newCA});
   } catch (error) {
     console.log(error);
   }
@@ -74,7 +74,7 @@ exports.deleteCorrectAnswer = async (req, res) =>{
   try {
     const findCorrectAnswer = await answerService.getCorrectAnswerId(id);
     const deleteCorrectAnswer = await answerService.deleteCorrectAnswer(findCorrectAnswer.correct_answers_id);
-    console.log(deleteCorrectAnswer);
+    return res.status(200).json({msg:"Success",deleteCorrectAnswer});
   } catch (error) {
     console.log(error);
   }
@@ -94,7 +94,7 @@ exports.createWrongAnswer = async (req, res) => {
   try {
     const findQuestion = await questionService.findQuestionById(question_id);
     const newWA = await answerService.createWrongAnswer(content, findQuestion.question_id);
-    console.log(newWA);
+    return res.status(200).json({msg:"Success",newWA});
   } catch (error) {
     console.log(error);
   }
@@ -104,7 +104,7 @@ exports.deleteWrongAnswer = async (req, res) =>{
   try {
     const findWrongAnswer = await answerService.getWrongAnswerId(id);
     const deleteWrongAnswer = await answerService.deleteWrongAnswer(findWrongAnswer.wrong_answers_id);
-    console.log(deleteWrongAnswer);
+    return res.status(200).json({msg:"Success",deleteWrongAnswer});
   } catch (error) {
     console.log(error);
   }

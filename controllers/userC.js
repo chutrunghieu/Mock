@@ -25,7 +25,7 @@ exports.submit = async (req, res) => {
 
     const addScore = await userService.addScore(score, user_id);
 
-    return res.json({ check });
+    return res.status(200).json({msg:"Success",check,addScore});
   } catch (error) {
     console.log(error);
   }
@@ -35,7 +35,7 @@ exports.getScore = async (req,res) => {
     const {user_id} = req.params.id;
     try {
         const getScore = await scores.findAll({where: {user_id:user_id},attributes: ["score"]})
-        return res.json({ getScore });
+        return res.status(200).json({msg:"Success",getScore});
     } catch (error) {
         console.log(error);
     }
@@ -59,7 +59,7 @@ exports.getQuestion = async (req, res) => {
         },
       ],
     });
-    return res.json({ questions });
+    return res.status(200).json({msg:"Success",questions});
   } catch (error) {
     console.log(error);
   }
@@ -70,7 +70,7 @@ exports.updateUser = async(req, res) =>{
   const user_id = req.params.id;
   try {
     const updateUser = await userService.updateUser(email, name, phone, user_id);
-    return res.json({updateUser});
+    return res.status(200).json({msg:"Success",updateUser});
   } catch (error) {
     console.log(error);
   }
@@ -81,7 +81,7 @@ exports.changePassword = async (req, res) =>{
   const user_id = req.params.id;
   try {
     const changePassword = await userService.changePassword(oldPassword, newPassword, newPassword2, user_id);
-    return res.json({changePassword});
+    return res.status(200).json({msg:"Success",changePassword});
   } catch (error) {
     console.log(error);
   }

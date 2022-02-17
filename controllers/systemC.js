@@ -16,7 +16,7 @@ exports.signUp = async (req, res, next) => {
       return console.log("Confirm password is wrong!");
     } else {
       const newUser = await userService.createUser(email, password,name, phone);
-      return console.log(newUser);
+      return res.status(200).json({msg:"Success",newUser});
     }
   } catch (error) {
     console.log(error);
@@ -34,7 +34,6 @@ exports.login = async (req, res, next) => {
       if (same) {
         const accessToken = await tokenService.signAccessToken(checkUser.user_id,checkUser.role);
         const refreshToken = await tokenService.signRefreshToken(checkUser.user_id,checkUser.role);
-        console.log(refreshToken);
         const checkToken = await tokenService.findToken(refreshToken);
         if (!checkToken) {
           const newToken = await tokenService.createToken(refreshToken, checkUser.user_id);
@@ -45,7 +44,7 @@ exports.login = async (req, res, next) => {
         if (checkUser.role === "admin"){
           console.log("admin home");
         }
-        return res.json({accessToken,refreshToken});
+        return res.status(200).json({msg:"Success",accessToken,refreshToken});
       } else {
         const msg = "Username or Password is incorrect !";
         return console.log(msg);
@@ -61,8 +60,8 @@ exports.logout = async (req, res) =>{
   try {
     const checkToken = await tokenService.findToken(refreshToken);
     if(checkToken){
-      await tokenService.destroyToken(refreshToken);
-      console.log('Logout successfully!');
+      const destroyToken= await tokenService.destroyToken(refreshToken);
+      return res.status(200).json({msg:"Success",destroyToken});
     }
   } catch (error) {
     console.log(error)
@@ -79,8 +78,7 @@ exports.refreshToken = async (req, res) => {
         const accessToken = await tokenService.signAccessToken(data.user_id,data.role);
         const newRefreshToken = await tokenService.signRefreshToken(data.user_id,data.role);
         const updateRefreshToken = await tokenService.updateToken(newRefreshToken, check.token_id);
-        console.log(accessToken);
-        console.log(updateRefreshToken);
+        return res.status(200).json({msg:"Success",accessToken,newRefreshToken,updateRefreshToken});
       }
     }
   } catch (error) {
