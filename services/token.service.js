@@ -4,10 +4,10 @@ var jwt = require("jsonwebtoken");
 var dotenv = require("dotenv");
 dotenv.config();
 
-exports.signAccessToken = async (email, role) =>{
+exports.signAccessToken = async (user_id, role) =>{
     try {
         const accessToken = jwt.sign(
-            { email: email, role: role },
+            { user_id: user_id, role: role },
             process.env.ACCESS_TOKEN_SECRET,
             { expiresIn: "60s" }
           );   
@@ -16,10 +16,10 @@ exports.signAccessToken = async (email, role) =>{
         console.log(error);
     };
 };
-exports.signRefreshToken = async (email,role)=>{
+exports.signRefreshToken = async (user_id,role)=>{
     try {
         const refreshToken = jwt.sign(
-            { email: email, role: role },
+            { user_id: user_id, role: role },
             process.env.REFRESH_TOKEN_SECRET,
             { expiresIn: "86400s" }
           );
@@ -56,6 +56,14 @@ exports.destroyToken = async (refreshToken) =>{
     try {
         const destroyToken = await token.destroy({where: {data_token: refreshToken}});
         return destroyToken;
+    } catch (error) {
+        console.log(error)
+    }
+}
+exports.updateToken = async (newRefreshToken, token_id) =>{
+    try {
+        const updateToken = await token.update({data_token: newRefreshToken},{where:{token_id:token_id}});
+        return updateToken;
     } catch (error) {
         console.log(error)
     }

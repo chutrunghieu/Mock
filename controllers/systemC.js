@@ -30,23 +30,22 @@ exports.login = async (req, res, next) => {
     if (!checkUser) {
       return console.log("User is not found!");
     } else {
-      const same = bcrypt.compare(checkUser.password, pwd);
+      const same = await bcrypt.compare(pwd, checkUser.password);
       if (same) {
-        const accessToken = await tokenService.signAccessToken(email,checkUser.role);
-        const refreshToken = await tokenService.signRefreshToken(email,checkUser.role);
-
+        const accessToken = await tokenService.signAccessToken(checkUser.user_id,checkUser.role);
+        const refreshToken = await tokenService.signRefreshToken(checkUser.user_id,checkUser.role);
+        console.log(refreshToken);
         const checkToken = await tokenService.findToken(refreshToken);
         if (!checkToken) {
           const newToken = await tokenService.createToken(refreshToken, checkUser.user_id);
-          console.log(newToken);
         }
-        console.log(accessToken);
         if (checkUser.role === "user"){
           console.log("user home");
         }
         if (checkUser.role === "admin"){
           console.log("admin home");
         }
+        return res.json({accessToken,refreshToken});
       } else {
         const msg = "Username or Password is incorrect !";
         return console.log(msg);
@@ -58,7 +57,7 @@ exports.login = async (req, res, next) => {
 };
 
 exports.logout = async (req, res) =>{
-  const refreshToken = req.body.token;
+  const {refreshToken} = req.body;
   try {
     const checkToken = await tokenService.findToken(refreshToken);
     if(checkToken){
@@ -74,10 +73,14 @@ exports.refreshToken = async (req, res) => {
   try {
     const check = await tokenService.findToken(refreshToken);
     if (check) {
-      const data = tokenService.verifyToken(refreshToken);
+      const data = await tokenService.verifyToken(refreshToken);
+      console.log(data)
       if (data) {
-        const accessToken = await tokenService.signAccessToken(data.email,data.role);
+        const accessToken = await tokenService.signAccessToken(data.user_id,data.role);
+        const newRefreshToken = await tokenService.signRefreshToken(data.user_id,data.role);
+        const updateRefreshToken = await tokenService.updateToken(newRefreshToken, check.token_id);
         console.log(accessToken);
+        console.log(updateRefreshToken);
       }
     }
   } catch (error) {

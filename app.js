@@ -2,13 +2,15 @@ const express = require('express');
 const path = require('path');
 const bodyParser = require('body-parser');
 var methodOverride = require("method-override");
-
-const app = express();
 var usersRouter = require('./routes/users');
 var systemRouter = require('./routes/system');
 var adminRouter = require('./routes/admin');
-
+const config = require('./config/passport');
+const passport = require('passport');
 const db = require('./config/database'); 
+
+const app = express();
+
 //connect database
 const testDatabase = async(req, res) => {
   try {
@@ -36,6 +38,9 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/', usersRouter);
 app.use('/system', systemRouter);
 app.use('/admin',adminRouter);
+
+app.use(passport.initialize());
+passport.use('jwt', config.jwtStrategy);
 
 const PORT = process.env.PORT || 3000;
 

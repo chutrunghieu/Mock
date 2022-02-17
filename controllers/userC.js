@@ -5,12 +5,12 @@ const {userService} = require('../services/index');
 const scores = require("../models/scoreModel");
 
 exports.submit = async (req, res) => {
+  const { user_id } = req.params.id;
   const { answerOfUser } = req.body;
   const correctAnswerArray = [];
   const compare = function (a, b) {
     return a.question_id === b.question_id && a.content === b.content;
   };
-  const user_id = 1;
   try {
     const correctAnswer = await correctAnswers.findAll({
       attributes: ["question_id", "content"],
@@ -32,7 +32,7 @@ exports.submit = async (req, res) => {
 };
 
 exports.getScore = async (req,res) => {
-    const user_id = 1;
+    const {user_id} = req.params.id;
     try {
         const getScore = await scores.findAll({where: {user_id:user_id},attributes: ["score"]})
         return res.json({ getScore });
@@ -59,9 +59,31 @@ exports.getQuestion = async (req, res) => {
         },
       ],
     });
-    console.log(questions);
     return res.json({ questions });
   } catch (error) {
     console.log(error);
   }
 };
+
+exports.updateUser = async(req, res) =>{
+  const {email, name, phone} = req.body;
+  const user_id = req.params.id;
+  try {
+    const updateUser = await userService.updateUser(email, name, phone, user_id);
+    return res.json({updateUser});
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+exports.changePassword = async (req, res) =>{
+  const { oldPassword, newPassword, newPassword2 } = req.body;
+  const user_id = req.params.id;
+  try {
+    const changePassword = await userService.changePassword(oldPassword, newPassword, newPassword2, user_id);
+    return res.json({changePassword});
+  } catch (error) {
+    console.log(error);
+  }
+};
+      
